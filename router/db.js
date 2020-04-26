@@ -28,8 +28,7 @@ router.get(`/${COLLECTION_NAME}/:count`, (req, res) => {
       if (err) return res.send('get failed.')
       res.send({ data })
     })
-  }
-  else if (isNumber(req.params.count)) {
+  } else if (isNumber(req.params.count)) {
     db.collection(COLLECTION_NAME).find().sort(SORT_METHOD).limit(Number(req.params.count)).toArray((err, result) => {
       if (err) return res.send('get failed.')
       const data = result.reduce((acc, value) => {
@@ -48,13 +47,13 @@ router.get(`/${COLLECTION_NAME}/:count`, (req, res) => {
 
 // Post one history
 router.post(`/${COLLECTION_NAME}`, (req, res) => {
-  const { content } = req.body
+  const { content, user = 'DEFAULT' } = req.body
   const date = Date.now().toString()
   if (content === undefined) {
     res.send('"content" format error.')
   }
   else {
-    db.collection(COLLECTION_NAME).insertOne({ date, content }, (err) => {
+    db.collection(COLLECTION_NAME).insertOne({ date, content, user }, (err) => {
       if (err) return res.send('Insert failed.')
       console.log("Insert success")
     })
@@ -62,7 +61,7 @@ router.post(`/${COLLECTION_NAME}`, (req, res) => {
   }
 })
 
-// Delete on history
+// Delete one history
 router.delete(`/${COLLECTION_NAME}/:id`, (req, res) => {
   if (req.params.id === undefined) {
     res.send('id format error.')
