@@ -8,19 +8,24 @@ const fs = require('fs')
 const matchSorter = require('match-sorter').default
 const socket = require('socket.io')
 const chokidar = require('chokidar')
-const { isDevMode, getNowTime, getFileDataSync, pickObjKeysInArray } = require('./utils/base')
+
+const graphqlHTTP = require('express-graphql')
+const { root, schema } = require('./graphql/index')
+
+const { isDevMode, getNowTime, pickObjKeysInArray } = require('./utils/base')
 const { selectCommonSongList } = require('./utils/data')
+const { zhuoZhuData } = require('./asset/data')
 const { getPdfFileList } = require('./src/getPdfFileList')
 const { SOCKET_EVENT } = require('./constants/index')
 
+
 // Config
+app.use(cors())
 const PORT = 5566
 let nodeAPIMode
 const latestFile = { index: -1, timeStamp: 0 }
 
-// Init essential data (maybe use xstate to judge state?)
-const ASSET_PATH = path.join(__dirname, 'asset')
-const { songs: songList, books: bookList } = JSON.parse(getFileDataSync(`${ASSET_PATH}/zhuo-zhu-data.json`))
+const { songList,  bookList } = zhuoZhuData
 
 // Init File list data
 const PDF_FOLDER_PATH = path.join(__dirname, 'pdfs/')
@@ -32,6 +37,13 @@ app.use(logfmt.requestLogger())
 
 // Enable parse json body
 app.use(express.json())
+
+// Graphql
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}))
 
 // Database route
 if (isDevMode()) {
