@@ -30,11 +30,11 @@ const createDataWithPagination = (keyword, result, hits) => {
 
 exports.handleSearchWithCache = (query = {}, sourceData, hits = DEFAULT_HITS_COUNT) => {
   const { keyword, page } = query
-  const data = getDataFromCache(keyword, page)
+  const data = getDataFromCache(keyword, page, page)
   if (data) {
     return {
       result: data.pageData[page],
-      pagination: data.pagination
+      pagination: Object.assign({}, data.pagination, { currentPage: page })
     }
   }
 
@@ -44,6 +44,6 @@ exports.handleSearchWithCache = (query = {}, sourceData, hits = DEFAULT_HITS_COU
   if (!isSuccess) console.log('Cache error')
   return {
     result: cacheData.pageData[page],
-    pagination: cacheData.pagination
+    pagination: Object.assign({}, cacheData.pagination, { currentPage: page })
   }
 }

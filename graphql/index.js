@@ -18,6 +18,7 @@ const schema = buildSchema(`
   }
 
   type Pagination {
+    currentPage: Int,
     totalPages: Int,
     pageSize: Int,
     totalCount: Int
