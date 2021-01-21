@@ -20,6 +20,6 @@
     "match-sorter": "^4.1.0",
     "mongodb": "^3.5.2",
     "node-cache": "^5.1.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   }
 }
